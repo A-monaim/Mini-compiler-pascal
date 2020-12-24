@@ -5,7 +5,7 @@ int main(){
 	int x =0;
     listeSequence list;
     list = NULL;
-    fichier = fopen("fich1.pascal", "r");
+    fichier = fopen("fich.pascal", "r");
     CarSuiv();
     SymboleSuiv();
     do{

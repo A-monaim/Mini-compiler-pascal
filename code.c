@@ -5,7 +5,7 @@ const char* special_token_list[]={"PV", "PT", "PLUS", "MOINS", "MULT", "DIV", "V
 
 const char* special_symbols_list[]={";", ".", "+", "-", "*", "/", "," , ":=", "<", "<=",  ">", ">=", "<>", "(", ")", "="};
 
-int lolo = 0;
+int lolo = 1;
 int lex = 0;
 int syn = 0;
 int sem = 0;
@@ -175,7 +175,7 @@ listeSequence insererSequence(chaineToken *seq,listeSequence liste){
 
 int ch = 0;
 static char *current;
-/*void afficherSequences(listeSequence liste){
+void afficherSequences(listeSequence liste){
 	int stop = 0;
 	listeSequence li;
 	li = liste;
@@ -185,7 +185,6 @@ static char *current;
 	}
 	return;
 }
-*/
 int pp = 0;
 
 bool verifyToken(char *code){
@@ -327,13 +326,18 @@ void Ecrire(){
 }
 
 void Lire(){
+	int tt = 0;
     if(!verifyToken("PO"))
     	SyntaxError("An open brace is forgotten ");
     while(!verifyToken("PF")){
-        verifyToken("ID");
-        if((!verifyToken("VIR")) && (!verifyToken("PF"))){
-        	SyntaxError("A close brace is forgotten ");
+    	if(tt == 1){
+    		SyntaxError("A close brace is forgotten ");
         	break;
+    	}
+        verifyToken("ID");
+        if((!verifyToken("VIR"))){
+        	tt = 1;
+        	
         }
     }
 }
@@ -518,7 +522,7 @@ void constChange(listeSequence liste){
 	listeSequence li1, li2;
 	li1 = liste;
 	li2 = liste;
-	int sortir = 0;
+	int sortir = 0, pf = 0;
 	while(strcmp(li1->infos->nomToken, "BEGIN") != 0)
 		li1=li1->suivant;
 	while(strcmp(li2->infos->nomToken, "BEGIN") != 0){
@@ -545,8 +549,14 @@ void constChange(listeSequence liste){
 						{
 							while(strcmp(li1->infos->codeToken, "PF") != 0){
 								if(strcmp(li1->infos->codeToken, "ID") != 0){
-									break;
+									li1 = li1->suivant;
+									if(strcmp(li1->infos->codeToken, "PF") == 0){
+										pf = 1;
+										break;
+									}
 								}
+								if(strcmp(li1->infos->codeToken, "ID") == 0)
+									pf = 0;
 								if ((strcmp(li1->infos->nomToken, li2->infos->nomToken) == 0) && (strcmp(li1->infos->codeToken, "ID") == 0))
 								{
 									sem = 1;
